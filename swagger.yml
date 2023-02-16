@@ -471,12 +471,16 @@ paths:
         "405":
           description: Validation Exception - The properties in the request body are not right shape/type
 
-  /subscription/{phoneNumber}/{subscriptionId}:
-    put:
+  /subscription/{phoneNumber}:
+    get:
       tags:
         - Subscription
-      summary: Update the Subscription details
-      description: Solsys uses the HTTP PUT method to update the subscription detils of an existing Account. Provid updated subscription data in the body of the PUT message. Also in request parameter provide phoneNumber of suscription account and subscriptionId of updated subcscription. Provide token for authorization in header.
+      summary: Retrieval of list of subscriptions of an exising account
+      description:
+        Solsys uses the HTTP GET method to retrive the list of subscriptions of an existing Account. It requires phoneNumber to be send as request parameter, considering subscriptions are linked to phone_number. Provide token for authorization in header.
+
+        Returns a single billing address details as an account must have exactly one billing address
+      operationId: getSubscriptions
       parameters:
         - name: bearerAuth
           in: header
@@ -486,31 +490,26 @@ paths:
             type: string
         - name: phoneNumber
           in: path
-          description: phone number of suscription account
+          description: phone Number of an account
           required: true
+          example: 1MR2P4Q5
           schema:
             type: integer
-            example: 1MR2P4Q5
-        - name: subscriptionId
-          in: path
-          description: subscriptionId of updated subcscription
-          required: true
-          schema:
-            type: integer
-            example: 9YU78GFB
-      operationId: updateSubscription
-      requestBody:
-        $ref: "#/components/requestBodies/Subscription"
+            format: int64
       responses:
         "200":
-          description: Successful operation
+          description: successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SubscriptionRes"
+                type: array
+                items:
+                  $ref: "#/components/schemas/SubscriptionRes"
             application/xml:
               schema:
-                $ref: "#/components/schemas/SubscriptionRes"
+                type: array
+                items:
+                  $ref: "#/components/schemas/SubscriptionRes"
         "400":
           description: Bad Request - The request was unacceptable, often due to missing a required parameter.
         "401":
@@ -519,8 +518,6 @@ paths:
           description: Request Failed -	The parameters were valid but the request failed.
         "404":
           description: Not Found	- The requested resource doesn't exist.
-        "405":
-          description: Validation Exception - The properties in the request body are not right shape/type
       security:
         - api_key: [api_key]
 components:
