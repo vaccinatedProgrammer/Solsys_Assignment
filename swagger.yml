@@ -1,0 +1,783 @@
+openapi: 3.0.3
+info:
+  title: Solsys - API Reference
+  description: |-
+    The Solsys API is organized around REST. Solsys API has predictable resource-oriented URLs, accepts form-encoded request bodies, returns JSON-encoded responses, and uses standard HTTP response codes, authentication, and verbs.
+
+    ## Errors
+    Solsys uses conventional HTTP response codes to indicate the success or failure of an API request. In general: Codes in the 2xx range indicate success. Codes in the 4xx range indicate an error that failed given the information provided (e.g., a required parameter was omitted, etc.). Codes in the 5xx range indicate an error with Solsys's servers (these are rare).
+
+      Some 4xx errors that could be handled programmatically (e.g., a card is declined) include an error code that briefly explains the error reported.
+
+    ### HTTP STATUS CODE SUMMARY
+      * **200 - OK** : Everything worked as expected.
+      * **400 - Bad Request** : The request was unacceptable, often due to missing a required parameter.
+      * **401 - Unauthorized** : No valid API Key / access token provided.
+      * **402 - Request Failed** : The parameters were valid but the request failed.
+      * **403 - Forbidden** : The API key doesn't have permissions to perform the request.
+      * **404 - Not Found** : The requested resource doesn't exist.
+      * **405 - Validation Exception** : The properties in the request body are not right shape/type
+      * **500, 502, 503, 504 - Server Error** : Something went wrong on Solsys's end.
+  contact:
+    email: bharat.suryawanshi219@gmail.com
+  version: 1.0.11
+externalDocs:
+  description: Find out more about developer
+  url: https://www.linkedin.com/in/bharat-suryawanshi/
+servers:
+  - url: https:/Solsys/api/v1
+tags:
+  - name: Account
+    description: Everything about account
+  - name: Billing Address
+    description: Everything about billing address, An account must have exactly one billing address
+  - name: Subscription
+    description: Everything about subscription, An account may have zero or more subscriptions.
+paths:
+  /accounts:
+    post:
+      tags:
+        - Account
+      summary: Creation of a new account
+      description: Solsys uses the HTTP POST method to add an Account. Provide complete account data in the body of the POST message.
+      operationId: addAccount
+      requestBody:
+        description: Create a new account
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountReq"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/Account"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Account"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "400":
+          description: Bad Request - The request was unacceptable, often due to missing a required parameter.
+        "402":
+          description: Request Failed -	The parameters were valid but the request failed.
+        "405":
+          description: Validation Exception - The properties in the request body are not right shape/type
+
+  /accounts/{accountId}:
+    put:
+      tags:
+        - Account
+      summary: Update an existing account
+      description: Solsys uses the HTTP PUT method to update an existing Account. Provide complete account data in the body of the PUT message. Provide token for authorization in header. (*If dont want to send entire account data and partially want to modify the account, You can use Solsys PATCH /acount API).
+      parameters:
+        - name: bearerAuth
+          in: header
+          description: ""
+          required: true
+          schema:
+            type: string
+        - name: accountId
+          in: path
+          description: ID of the account which is getting modified
+          required: true
+          schema:
+            type: integer
+            example: 1MR2P4Q5
+      operationId: updateAccount
+      requestBody:
+        description: Update an existent account
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountReq"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/Account"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Account"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "400":
+          description: Bad Request - The request was unacceptable, often due to missing a required parameter.
+        "401":
+          description: Unauthorized - No valid API Key / access token provided
+        "402":
+          description: Request Failed -	The parameters were valid but the request failed.
+        "404":
+          description: Not Found	- The requested resource doesn't exist.
+        "405":
+          description: Validation Exception - The properties in the request body are not right shape/type
+      security:
+        - api_key: [api_key]
+    patch:
+      tags:
+        - Account
+      summary: Update an existing account
+      description: Solsys uses the HTTP PATCH method to partially update an existing Account. If dont want to send entire account data and partially want to modify the account, this is the right API. Dont forget to add token in header for authorization
+      parameters:
+        - name: bearerAuth
+          in: header
+          description: ""
+          required: true
+          schema:
+            type: string
+        - name: accountId
+          in: path
+          description: ID of the account which is getting modified
+          required: true
+          schema:
+            type: integer
+            example: 1MR2P4Q5
+      operationId: updateAccount
+      requestBody:
+        description: Update an existent account
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountReq"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/Account"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Account"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "400":
+          description: Bad Request - The request was unacceptable, often due to missing a required parameter.
+        "401":
+          description: Unauthorized - No valid API Key / access token provided
+        "402":
+          description: Request Failed -	The parameters were valid but the request failed.
+        "404":
+          description: Not Found	- The requested resource doesn't exist.
+        "405":
+          description: Validation Exception - The properties in the request body are not right shape/type
+      security:
+        - api_key: [api_key]
+    get:
+      tags:
+        - Account
+      summary: Retrieval of account information
+      description: Solsys uses the HTTP GET method to retrive the an existing Account details. It requires accountId to be send as request parameter.  Provide token for authorization in header.
+      operationId: getAccountById
+      parameters:
+        - name: bearerAuth
+          in: header
+          description: ""
+          required: true
+          schema:
+            type: string
+        - name: accountId
+          in: path
+          description: accountId of account to return
+          required: true
+          example: 1MR2P4Q5
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "400":
+          description: Bad Request - The request was unacceptable, often due to missing a required parameter.
+        "401":
+          description: Unauthorized - No valid API Key / access token provided
+        "402":
+          description: Request Failed -	The parameters were valid but the request failed.
+        "404":
+          description: Not Found	- The requested resource doesn't exist.
+      security:
+        - api_key: [api_key]
+    delete:
+      tags:
+        - Account
+      summary: Delete of an existing account
+      description: Solsys uses the HTTP DELETE method to remove an Account. It requires accountId to be send as request parameter.  Provide token for authorization in header.
+      operationId: deleteAccount
+      parameters:
+        - name: bearerAuth
+          in: header
+          description: ""
+          required: true
+          schema:
+            type: string
+        - name: accountId
+          in: path
+          description: account id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Bad Request - The request was unacceptable, often due to missing a required parameter.
+        "401":
+          description: Unauthorized - No valid API Key / access token provided
+        "402":
+          description: Request Failed -	The parameters were valid but the request failed.
+        "404":
+          description: Not Found	- The requested resource doesn't exist.
+      security:
+        - api_key: [api_key]
+
+  /billing-address:
+    post:
+      tags:
+        - Billing Address
+      summary: Creation of a new billing address
+      description: Add a new billing address
+      parameters:
+        - name: bearerAuth
+          in: header
+          description: ""
+          required: true
+          schema:
+            type: string
+      operationId: addBillingAddress
+      requestBody:
+        description: Add billing address to an account
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BillingAddress"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/BillingAddress"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/BillingAddress"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingAddress"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/BillingAddress"
+        "400":
+          description: Bad Request - The request was unacceptable, often due to missing a required parameter.
+        "401":
+          description: Unauthorized - No valid API Key / access token provided
+        "402":
+          description: Request Failed -	The parameters were valid but the request failed.
+        "405":
+          description: Validation Exception - The properties in the request body are not right shape/type
+  /billing-address/{accountId}:
+    put:
+      tags:
+        - Billing Address
+      summary: Update an billing address of an account
+      description: Solsys uses the HTTP PUT method to update the billing address of an existing Account. Provide complete billing address data in the body of the PUT message. Provide token for authorization in header.
+      parameters:
+        - name: bearerAuth
+          in: header
+          description: ""
+          required: true
+          schema:
+            type: string
+        - name: accountId
+          in: path
+          description: ID of the account of with billing address getting modified
+          required: true
+          schema:
+            type: integer
+            example: 1MR2P4Q5
+      operationId: updateBillingAddress
+      requestBody:
+        description: Update billing address for an existent account
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BillingAddressPutReq"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/BillingAddressPutReq"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/BillingAddressPutReq"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingAddress"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/BillingAddress"
+        "400":
+          description: Bad Request - The request was unacceptable, often due to missing a required parameter.
+        "401":
+          description: Unauthorized - No valid API Key / access token provided
+        "402":
+          description: Request Failed -	The parameters were valid but the request failed.
+        "404":
+          description: Not Found	- The requested resource doesn't exist.
+        "405":
+          description: Validation Exception - The properties in the request body are not right shape/type
+      security:
+        - api_key: [api_key]
+    get:
+      tags:
+        - Billing Address
+      summary: Retrieval of billing address of an exising account
+      description:
+        Solsys uses the HTTP GET method to retrive the billing address of an existing Account. It requires accountId to be send as request parameter.  Provide token for authorization in header.
+
+        Returns a single billing address details as an account must have exactly one billing address
+      operationId: getBillingAddressByAccountId
+      parameters:
+        - name: bearerAuth
+          in: header
+          description: ""
+          required: true
+          schema:
+            type: string
+        - name: accountId
+          in: path
+          description: accountId of account
+          required: true
+          example: 1MR2P4Q5
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingAddress"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/BillingAddress"
+        "400":
+          description: Bad Request - The request was unacceptable, often due to missing a required parameter.
+        "401":
+          description: Unauthorized - No valid API Key / access token provided
+        "402":
+          description: Request Failed -	The parameters were valid but the request failed.
+        "404":
+          description: Not Found	- The requested resource doesn't exist.
+      security:
+        - api_key: [api_key]
+    delete:
+      tags:
+        - Billing Address
+      summary: Delete of billing address of an existing account
+      description: Solsys uses the HTTP DELETE method to remove the billing address of an existing Account. It requires accountId to be send as request parameter.  Provide token for authorization in header.
+      operationId: deleteBillingAddress
+      parameters:
+        - name: bearerAuth
+          in: header
+          description: ""
+          required: true
+          schema:
+            type: string
+        - name: accountId
+          in: path
+          description: account id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Bad Request - The request was unacceptable, often due to missing a required parameter.
+        "401":
+          description: Unauthorized - No valid API Key / access token provided
+        "402":
+          description: Request Failed -	The parameters were valid but the request failed.
+        "404":
+          description: Not Found	- The requested resource doesn't exist.
+      security:
+        - api_key: [api_key]
+
+  /subscriptions:
+    post:
+      tags:
+        - Subscription
+      summary: Creation of a new subscription
+      description: Solsys uses the HTTP POST method to add the subscription of an existing Account. Provide complete subscription data in the body of the POST message including phoneNumber of the account in which subscript should get add. Provide token for authorization in header.
+      parameters:
+        - name: bearerAuth
+          in: header
+          description: ""
+          required: true
+          schema:
+            type: string
+      operationId: addSubscription
+      requestBody:
+        $ref: "#/components/requestBodies/Subscription"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriptionRes"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/SubscriptionRes"
+        "400":
+          description: Bad Request - The request was unacceptable, often due to missing a required parameter.
+        "401":
+          description: Unauthorized - No valid API Key / access token provided
+        "402":
+          description: Request Failed -	The parameters were valid but the request failed.
+        "405":
+          description: Validation Exception - The properties in the request body are not right shape/type
+
+  /subscription/{phoneNumber}/{subscriptionId}:
+    put:
+      tags:
+        - Subscription
+      summary: Update the Subscription details
+      description: Solsys uses the HTTP PUT method to update the subscription detils of an existing Account. Provid updated subscription data in the body of the PUT message. Also in request parameter provide phoneNumber of suscription account and subscriptionId of updated subcscription. Provide token for authorization in header.
+      parameters:
+        - name: bearerAuth
+          in: header
+          description: ""
+          required: true
+          schema:
+            type: string
+        - name: phoneNumber
+          in: path
+          description: phone number of suscription account
+          required: true
+          schema:
+            type: integer
+            example: 1MR2P4Q5
+        - name: subscriptionId
+          in: path
+          description: subscriptionId of updated subcscription
+          required: true
+          schema:
+            type: integer
+            example: 9YU78GFB
+      operationId: updateSubscription
+      requestBody:
+        $ref: "#/components/requestBodies/Subscription"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriptionRes"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/SubscriptionRes"
+        "400":
+          description: Bad Request - The request was unacceptable, often due to missing a required parameter.
+        "401":
+          description: Unauthorized - No valid API Key / access token provided
+        "402":
+          description: Request Failed -	The parameters were valid but the request failed.
+        "404":
+          description: Not Found	- The requested resource doesn't exist.
+        "405":
+          description: Validation Exception - The properties in the request body are not right shape/type
+      security:
+        - api_key: [api_key]
+components:
+  schemas:
+    AccountReq:
+      type: object
+      required: # List the required properties here
+        - balance
+        - status
+        - phone_number
+      properties:
+        balance:
+          type: integer
+          description: remaining balance
+          example: 100
+        status:
+          type: string
+          description: account status
+          enum: ["active", "inactive"]
+          example: "active"
+        phone_number:
+          type: string
+          example: "+1 (648) 987-9894"
+          pattern: '^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$'
+          description: phone number should be unique (considering subscription identify based on phone-number)
+        currency:
+          type: string
+          example: CAD
+          description: balance in currency (default is CAD)
+    Account:
+      type: object
+      properties:
+        account_id:
+          type: string
+          description: internal id
+          example: 1MR2P4Q5
+        balance:
+          type: integer
+          description: remaining balance
+          example: 100
+        status:
+          type: string
+          description: account status
+          enum: ["active", "inactive"]
+          example: "active"
+        phone_number:
+          type: string
+          example: "+1 (648) 987-9894"
+          pattern: '^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$'
+          description: phone number should be unique (considering subscription identify based on phone-number)
+        currency:
+          type: string
+          example: CAD
+          description: balance in currency
+    BillingAddress:
+      required: # List the required properties here
+        - account_id
+        - address1
+        - postal_code
+        - province
+      type: object
+      properties:
+        account_id:
+          type: string
+          description: internal id
+          example: 1MR2P4Q5
+        address1:
+          type: integer
+          description: address line 1
+          example: 456 Broadview
+        address2:
+          type: integer
+          description: address line 2
+          example: Unit 505
+        postal_code:
+          type: string
+          description: postal code (should be of 6 digit)
+          pattern: '/^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i'
+          example: "T8U 5I7"
+        province:
+          type: string
+          example: "ON"
+          enum:
+            [
+              "AB",
+              "BC",
+              "MB",
+              "NB",
+              "NL",
+              "NT",
+              "NS",
+              "NU",
+              "ON",
+              "PE",
+              "QC",
+              "SK",
+              "YT",
+            ]
+          description: Province in Canada
+    BillingAddressPutReq:
+      required: # List the required properties here
+        - address1
+        - postal_code
+        - province
+      type: object
+      properties:
+        address1:
+          type: integer
+          description: address line 1
+          example: 456 Broadview
+        address2:
+          type: integer
+          description: address line 2
+          example: Unit 505
+        postal_code:
+          type: string
+          description: postal code (should be of 6 digit)
+          pattern: '/^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i'
+          example: "T8U 5I7"
+        province:
+          type: string
+          example: "ON"
+          enum:
+            [
+              "AB",
+              "BC",
+              "MB",
+              "NB",
+              "NL",
+              "NT",
+              "NS",
+              "NU",
+              "ON",
+              "PE",
+              "QC",
+              "SK",
+              "YT",
+            ]
+          description: Province in Canada
+    Subscription:
+      type: object
+      required: # List the required properties here
+        - status
+        - price_plan
+        - phone_number
+      properties:
+        phone_number:
+          type: string
+          example: "+1 (648) 987-9894"
+          pattern: '^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$'
+          description: phone number should be unique (considering subscription identify based on phone-number)
+        status:
+          type: string
+          description: subscription status
+          enum: ["active", "inactive", "cancelled"]
+          example: "active"
+        price_plan:
+          type: string
+          description: product price plan
+          example: "360D200CAD"
+        subscription_start_date:
+          type: string
+          description: subscription start date
+          example: "2023-02-03"
+        subscription_end_date:
+          type: string
+          description: subscription end date
+          example: "2024-02-03"
+        subscription_cancel_date:
+          type: string
+          description: product cancel plan
+          example: ""
+    SubscriptionRes:
+      type: object
+      required: # List the required properties here
+        - status
+        - price_plan
+        - phone_number
+      properties:
+        subscription_id:
+          type: string
+          description: internal id
+          example: "9YU78GFB"
+        phone_number:
+          type: string
+          example: "+1 (648) 987-9894"
+          pattern: '^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$'
+          description: phone number should be unique (considering subscription identify based on phone-number)
+        status:
+          type: string
+          description: subscription status
+          enum: ["active", "inactive", "cancelled"]
+          example: "active"
+        price_plan:
+          type: string
+          description: product price plan
+          example: "360D200CAD"
+        subscription_start_date:
+          type: string
+          description: subscription start date
+          example: "2023-02-03"
+        subscription_end_date:
+          type: string
+          description: subscription end date
+          example: "2024-02-03"
+        subscription_cancel_date:
+          type: string
+          description: product cancel plan
+          example: ""
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: "##default"
+  requestBodies:
+    Pet:
+      description: Pet object that needs to be added to the store
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Account"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/Account"
+    UserArray:
+      description: List of user object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/Account"
+    Subscription:
+      description: subscription request object
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Subscription"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/Subscription"
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: "#/components/schemas/Subscription"
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
